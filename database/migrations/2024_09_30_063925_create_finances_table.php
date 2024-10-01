@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('activity_name');
             $table->enum('transaction_type', ['income', 'expense']);
-            $table->decimal('amount', 11, 2);;
-            $table->decimal('tax_amount', 11, 2);
+            $table->bigInteger('amount');
+            $table->bigInteger('tax_amount');
             $table->text('document_evidence');
             $table->text('image_evidence');
             $table->enum('status', ['approve', 'decline'])->default('decline');
