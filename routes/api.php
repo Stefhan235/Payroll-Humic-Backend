@@ -23,7 +23,12 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::get('/finance', [FinanceController::class, 'getAllFinanceData'])->middleware('auth:sanctum');
-Route::get('/dashboard', [FinanceController::class, 'getDashboard'])->middleware('auth:sanctum');
+Route::get('/finances', [FinanceController::class, 'getAllFinanceData'])->middleware('auth:sanctum');
+Route::get('/finance/{id}', [FinanceController::class, 'getFinanceDataById'])->middleware('auth:sanctum');
+Route::get('/dashboard', [FinanceController::class, 'getDashboardData'])->middleware('auth:sanctum');
+
+Route::post('/finance', [FinanceController::class, 'postFinanceData'])->middleware('auth:sanctum');
+Route::delete('/finance/{id}', [FinanceController::class, 'deleteFinanceDataById'])->middleware(['auth:sanctum', 'role:superAdmin']);
+Route::post('/finance/{id}', [FinanceController::class, 'updateFinanceStatus'])->middleware(['auth:sanctum', 'role:superAdmin']);
 
 // Route::post('/logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum', 'role:admin']);

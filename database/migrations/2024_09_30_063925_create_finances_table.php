@@ -20,7 +20,7 @@ return new class extends Migration
             $table->bigInteger('tax_amount');
             $table->text('document_evidence');
             $table->text('image_evidence');
-            $table->enum('status', ['approve', 'decline'])->default('decline');
+            $table->enum('status', ['approve', 'decline', 'pending'])->default('pending');
             $table->timestamps();
         });
     }
