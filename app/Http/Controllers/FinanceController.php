@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Finance;
 use Carbon\Carbon;
+use App\Exports\FinanceExcelExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FinanceController extends Controller
 {
@@ -250,5 +252,15 @@ class FinanceController extends Controller
             'status' => true,
             'data' => $finance,
         ], 200);
+    }
+
+    public function export(Request $request)
+    {
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
+
+        $fileName = 'finance_data_' . $startDate . '_to_' . $endDate . '.xlsx';
+
+        return Excel::download(new FinanceExcelExport($startDate, $endDate), $fileName);
     }
 }
