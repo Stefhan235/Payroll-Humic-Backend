@@ -31,4 +31,6 @@ Route::post('/finance', [FinanceController::class, 'postFinanceData'])->middlewa
 Route::delete('/finance/{id}', [FinanceController::class, 'deleteFinanceDataById'])->middleware(['auth:sanctum', 'role:superAdmin']);
 Route::post('/finance/{id}', [FinanceController::class, 'updateFinanceStatus'])->middleware(['auth:sanctum', 'role:superAdmin']);
 
-// Route::post('/logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum', 'role:admin']);
+Route::get('/income',[FinanceController::class, 'getAllIncome'])->middleware('auth:sanctum');
+Route::get('/expense',[FinanceController::class, 'getAllExpense'])->middleware('auth:sanctum');
+Route::get('/pending',[FinanceController::class, 'getPendingFinance'])->middleware('auth:sanctum');

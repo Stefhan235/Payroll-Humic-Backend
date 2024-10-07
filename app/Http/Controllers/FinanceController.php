@@ -37,8 +37,39 @@ class FinanceController extends Controller
         ], 200);
     }
 
+    public function getAllIncome()
+    {
+        $financeIncomeData = Finance::where('transaction_type', 'income')->get();
 
-    public function getDashboardData(){
+        return response()->json([
+            'status' => true,
+            'data' => $financeIncomeData
+        ], 200);
+    }
+
+    public function getAllExpense()
+    {
+        $financeExpenseData = Finance::where('transaction_type', 'expense')->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $financeExpenseData
+        ], 200);
+    }
+
+    public function getPendingFinance()
+    {
+        $financePendingData = Finance::where('status', 'pending')->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $financePendingData
+        ], 200);
+    }
+
+    public function getDashboardData(Request $request)
+    {
+        // Total ballance data
         $totalIncome = Finance::where('transaction_type', 'income')
                         ->where('status', 'approve')
                         ->sum('amount');
@@ -53,16 +84,19 @@ class FinanceController extends Controller
 
         $totalBallance = $totalIncome - $totalExpense - $totalExpenseTax;
 
+        // Montly total expense and income
         $currentDate = Carbon::now()->setTimezone('Asia/Jakarta');
         $currentMonth = $currentDate->month;
         $currentYear = $currentDate->year;
 
+        // Monthly total income
         $totalMonthlyIncome = Finance::where('transaction_type', 'income')
                                 ->where('status', 'approve')
                                 ->whereMonth('created_at', $currentMonth)
                                 ->whereYear('created_at', $currentYear)
                                 ->sum('amount');
         
+        // Monthly total expense
         $monthlyExpense = Finance::where('transaction_type', 'expense')
                                 ->where('status', 'approve')
                                 ->whereMonth('created_at', $currentMonth)
@@ -77,12 +111,33 @@ class FinanceController extends Controller
 
         $totalMonthlyExpense = $monthlyExpense + $monthlyExpenseTax;
 
+        // Transaction list with filtering (query params)
+        $transactionType = $request->query('transaction_type');
+
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date') ? Carbon::parse($request->query('end_date'))->endOfDay() : null;
+
+        $query = Finance::when($transactionType, function ($query, $transactionType) {
+                            return $query->where('transaction_type', $transactionType);
+                        })
+                        ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                            return $query->whereBetween('created_at', [$startDate, $endDate]);
+                        });
+
+        $transactionList = $query->get();
+
+        // User approval list
+        // $user = auth()->user();
+        // $approvalList = Finance::where('user_id', $user->id)->get();
+
         return response()->json([
             'status' => true,
             'data' => [
                 'ballance' => $totalBallance,
                 'monthlyIncome' => intval($totalMonthlyIncome),
-                'monthlyExpense' => intval($totalMonthlyExpense)
+                'monthlyExpense' => intval($totalMonthlyExpense),
+                'transactionList' => $transactionList
+                // 'approvalList' => $approvalList
             ]
         ], 200);
     }
