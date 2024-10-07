@@ -12,11 +12,13 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class FinanceController extends Controller
 {
-    public function getAllFinanceData()
+    public function getAllFinanceData(Request $request)
     {
+        $limit = $request->input('limit', 10); 
+        
         $financeData = Finance::with('user')
                             ->orderBy('created_at', 'desc')
-                            ->get();
+                            ->paginate($limit);
 
         return response()->json([
             'status' => true,
@@ -41,11 +43,13 @@ class FinanceController extends Controller
         ], 200);
     }
 
-    public function getAllIncome()
+    public function getAllIncome(Request $request)
     {
+        $limit = $request->input('limit', 10); 
+
         $financeIncomeData = Finance::where('transaction_type', 'income')
                                     ->orderBy('created_at', 'desc')
-                                    ->get();
+                                    ->paginate($limit);
 
         return response()->json([
             'status' => true,
@@ -53,11 +57,13 @@ class FinanceController extends Controller
         ], 200);
     }
 
-    public function getAllExpense()
+    public function getAllExpense(Request $request)
     {
+        $limit = $request->input('limit', 10); 
+
         $financeExpenseData = Finance::where('transaction_type', 'expense')
                                     ->orderBy('created_at', 'desc')
-                                    ->get();
+                                    ->paginate($limit);
 
         return response()->json([
             'status' => true,
@@ -65,11 +71,13 @@ class FinanceController extends Controller
         ], 200);
     }
 
-    public function getPendingFinance()
+    public function getPendingFinance(Request $request)
     {
+        $limit = $request->input('limit', 10); 
+
         $financePendingData = Finance::where('status', 'pending')
                                     ->orderBy('created_at', 'desc')
-                                    ->get();
+                                    ->paginate($limit);
 
         return response()->json([
             'status' => true,
@@ -134,7 +142,9 @@ class FinanceController extends Controller
                             return $query->whereBetween('created_at', [$startDate, $endDate]);
                         });
 
-        $transactionList = $query->orderBy('created_at', 'desc')->get();
+        $limit = $request->input('limit', 10); 
+
+        $transactionList = $query->orderBy('created_at', 'desc')->paginate($limit);;
 
         // User approval list
         // $user = auth()->user();
