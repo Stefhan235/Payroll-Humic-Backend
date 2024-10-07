@@ -42,7 +42,7 @@ class FinanceExcelExport implements FromCollection, WithHeadings, WithStyles
         $numberedFinances = $finances->map(function ($finance, $key) {
             return [
                 'No' => $key + 1,
-                'ID' => $finance->id,
+                // 'ID' => $finance->id,
                 'Activity Name' => $finance->activity_name,
                 'Transaction Type' => $finance->transaction_type,
                 'Amount' => (string)$finance->amount,
@@ -61,7 +61,7 @@ class FinanceExcelExport implements FromCollection, WithHeadings, WithStyles
     {
         return [
             'No',
-            'ID',
+            // 'ID',
             'Activity Name',
             'Transaction Type',
             'Amount',
@@ -83,5 +83,16 @@ class FinanceExcelExport implements FromCollection, WithHeadings, WithStyles
         foreach (range('A', $highestColumn) as $column) {
             $sheet->getColumnDimension($column)->setAutoSize(true);
         }
+
+        $styleArray = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle('A1:' . $highestColumn . $highestRow)->applyFromArray($styleArray);
     }
 }

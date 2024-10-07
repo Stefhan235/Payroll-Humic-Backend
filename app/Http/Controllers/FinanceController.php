@@ -254,7 +254,7 @@ class FinanceController extends Controller
         ], 200);
     }
 
-    public function export(Request $request)
+    public function exportToExcel(Request $request)
     {
         $startDate = $request->input('startDate');
         $endDate = $request->input('endDate');
@@ -262,5 +262,15 @@ class FinanceController extends Controller
         $fileName = 'finance_data_' . $startDate . '_to_' . $endDate . '.xlsx';
 
         return Excel::download(new FinanceExcelExport($startDate, $endDate), $fileName);
+    }
+    
+    public function exportToPDF(Request $request)
+    {
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
+
+        $fileName = 'finance_data_' . $startDate . '_to_' . $endDate . '.pdf';
+
+        return Excel::download(new FinanceExcelExport($startDate, $endDate), $fileName, \Maatwebsite\Excel\Excel::MPDF);
     }
 }

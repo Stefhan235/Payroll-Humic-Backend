@@ -35,4 +35,5 @@ Route::get('/income',[FinanceController::class, 'getAllIncome'])->middleware('au
 Route::get('/expense',[FinanceController::class, 'getAllExpense'])->middleware('auth:sanctum');
 Route::get('/pending',[FinanceController::class, 'getPendingFinance'])->middleware('auth:sanctum');
 
-Route::get('/export-excel', [FinanceController::class, 'export'])->middleware('auth:sanctum');
+Route::get('/export-excel', [FinanceController::class, 'exportToExcel'])->middleware('auth:sanctum');
+Route::get('/export-pdf', [FinanceController::class, 'exportToPDF'])->middleware('auth:sanctum');
