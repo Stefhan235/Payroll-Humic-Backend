@@ -12,7 +12,9 @@ class FinanceController extends Controller
 {
     public function getAllFinanceData()
     {
-        $financeData = Finance::with('user')->get();
+        $financeData = Finance::with('user')
+                            ->orderBy('created_at', 'desc')
+                            ->get();
 
         return response()->json([
             'status' => true,
@@ -39,7 +41,9 @@ class FinanceController extends Controller
 
     public function getAllIncome()
     {
-        $financeIncomeData = Finance::where('transaction_type', 'income')->get();
+        $financeIncomeData = Finance::where('transaction_type', 'income')
+                                    ->orderBy('created_at', 'desc')
+                                    ->get();
 
         return response()->json([
             'status' => true,
@@ -49,7 +53,9 @@ class FinanceController extends Controller
 
     public function getAllExpense()
     {
-        $financeExpenseData = Finance::where('transaction_type', 'expense')->get();
+        $financeExpenseData = Finance::where('transaction_type', 'expense')
+                                    ->orderBy('created_at', 'desc')
+                                    ->get();
 
         return response()->json([
             'status' => true,
@@ -59,7 +65,9 @@ class FinanceController extends Controller
 
     public function getPendingFinance()
     {
-        $financePendingData = Finance::where('status', 'pending')->get();
+        $financePendingData = Finance::where('status', 'pending')
+                                    ->orderBy('created_at', 'desc')
+                                    ->get();
 
         return response()->json([
             'status' => true,
@@ -124,7 +132,7 @@ class FinanceController extends Controller
                             return $query->whereBetween('created_at', [$startDate, $endDate]);
                         });
 
-        $transactionList = $query->get();
+        $transactionList = $query->orderBy('created_at', 'desc')->get();
 
         // User approval list
         // $user = auth()->user();
