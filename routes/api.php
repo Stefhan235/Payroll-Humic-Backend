@@ -34,6 +34,6 @@ Route::post('/finance/{id}', [FinanceController::class, 'updateFinanceStatus'])-
 
 Route::get('/income',[FinanceController::class, 'getAllIncome'])->middleware('auth:sanctum');
 Route::get('/expense',[FinanceController::class, 'getAllExpense'])->middleware('auth:sanctum');
-Route::get('/pending',[FinanceController::class, 'getPendingFinance'])->middleware('auth:sanctum');
+Route::get('/pending',[FinanceController::class, 'getPendingFinance'])->middleware(['auth:sanctum', 'role:superAdmin']);
 
 Route::get('/export', [FinanceController::class, 'export'])->middleware('auth:sanctum');
