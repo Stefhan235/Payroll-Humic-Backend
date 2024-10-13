@@ -272,7 +272,7 @@ class FinanceController extends Controller
 
         if ($type == 'excel') {
             $fileName = 'finance_data_' . $startDate . '_to_' . $endDate . '.xlsx';
-            return Excel::download(new FinanceExcelExport($startDate, $endDate), $fileName);
+            return Excel::download(new FinanceExcelExport($startDate, $endDate), $fileName, \Maatwebsite\Excel\Excel::XLSX);
         }elseif ($type == 'pdf') {
             $fileName = 'finance_data_' . $startDate . '_to_' . $endDate . '.pdf';
             return Excel::download(new FinanceExcelExport($startDate, $endDate), $fileName, \Maatwebsite\Excel\Excel::MPDF);
