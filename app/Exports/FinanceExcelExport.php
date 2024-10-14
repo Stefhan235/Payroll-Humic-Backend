@@ -42,15 +42,14 @@ class FinanceExcelExport implements FromCollection, WithHeadings, WithStyles
         $numberedFinances = $finances->map(function ($finance, $key) {
             return [
                 'No' => $key + 1,
-                // 'ID' => $finance->id,
                 'Activity Name' => $finance->activity_name,
                 'Transaction Type' => $finance->transaction_type,
                 'Amount' => (string)$finance->amount,
                 'Tax Amount' => (string)$finance->tax_amount,
-                'Document Evidence' => $finance->document_evidence,
-                'Image Evidence' => $finance->image_evidence,
+                'Document Evidence' => url('storage/' . $finance->document_evidence),
+                'Image Evidence' => url('storage/' . $finance->image_evidence),
                 'Status' => $finance->status,
-                'Created At' => $finance->created_at,
+                'Date' => $finance->created_at->timezone('Asia/Jakarta')->format('d-m-Y H:i:s'),
             ];
         });
 
@@ -61,7 +60,6 @@ class FinanceExcelExport implements FromCollection, WithHeadings, WithStyles
     {
         return [
             'No',
-            // 'ID',
             'Activity Name',
             'Transaction Type',
             'Amount',
@@ -69,14 +67,27 @@ class FinanceExcelExport implements FromCollection, WithHeadings, WithStyles
             'Document Evidence',
             'Image Evidence',
             'Status',
-            'Created At'
+            'Date'
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
+        $sheet->insertNewRowBefore(1, 2);
+        $sheet->setCellValue('A1', 'Laporan Keuangan');
+        $sheet->setCellValue('A2', 'Tanggal: ' . $this->startDate . ' - ' . $this->endDate);
+
+        $sheet->mergeCells('A1:I1');
+        $sheet->mergeCells('A2:I2');
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
+        $sheet->getStyle('A2')->getFont()->setBold(true);
+
+        $sheet->insertNewRowBefore(3, 1);
+
         $highestRow = $sheet->getHighestRow();
         $highestColumn = $sheet->getHighestColumn();
+
+        $sheet->getStyle('A4:' . $highestColumn . '4')->getFont()->setBold(true);
 
         $sheet->getStyle('A1:' . $highestColumn . $highestRow)->getAlignment()->setHorizontal('center');
 
@@ -93,6 +104,6 @@ class FinanceExcelExport implements FromCollection, WithHeadings, WithStyles
             ],
         ];
 
-        $sheet->getStyle('A1:' . $highestColumn . $highestRow)->applyFromArray($styleArray);
+        $sheet->getStyle('A4:' . $highestColumn . $highestRow)->applyFromArray($styleArray);
     }
 }
