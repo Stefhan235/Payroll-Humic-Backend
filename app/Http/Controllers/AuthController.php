@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -19,6 +20,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif',
         ]);
 
         // Mengecek validasi data dan menampilkan pesan error
@@ -30,12 +32,19 @@ class AuthController extends Controller
             ], 422);
         }
 
+        $imagePath = null;
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('users');
+        }
+
         // Membuat user pada database
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'admin'
+            'role' => 'admin',
+            'image' => $imagePath
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -122,6 +131,34 @@ class AuthController extends Controller
         return response()->json([
             'status'=> true,
             'message' => 'Password Change Successfully'
+        ], 200);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif',
+        ]);
+
+        $user = auth()->user();
+
+        $user->name = $request->name;
+
+        if ($request->hasFile('image')) {
+            if ($user->image) {
+                Storage::disk('public')->delete($user->image);
+            }
+
+            $imagePath = $request->file('image')->store('users');
+            $user->image = $imagePath;
+        }
+
+        $user->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Profile Updated Successfully.',
         ], 200);
     }
 }
