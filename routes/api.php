@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FinanceController;
+use App\Http\Controllers\PlanningController;
+use App\Http\Controllers\FileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,3 +40,10 @@ Route::get('/expense',[FinanceController::class, 'getAllExpense'])->middleware('
 Route::get('/pending',[FinanceController::class, 'getPendingFinance'])->middleware(['auth:sanctum', 'role:superAdmin']);
 
 Route::get('/export', [FinanceController::class, 'export'])->middleware('auth:sanctum');
+
+Route::get('/plannings', [PlanningController::class, 'getAllPlanning'])->middleware('auth:sanctum'); 
+Route::get('/planning/{id}', [PlanningController::class, 'getPlanningByID'])->middleware('auth:sanctum');
+Route::post('/planning', [PlanningController::class, 'postPlanning'])->middleware('auth:sanctum'); 
+Route::post('/planning/{id}', [PlanningController::class, 'updatePlanning'])->middleware('auth:sanctum');
+Route::delete('/planning/{id}', [PlanningController::class, 'deletePlanningById'])->middleware('auth:sanctum'); 
+Route::post('/files/upload', [FileController::class, 'upload'])->middleware('auth:sanctum');  
