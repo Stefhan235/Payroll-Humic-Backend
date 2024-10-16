@@ -25,7 +25,10 @@ class PlanningController extends Controller
             ], 422);
         }
 
+        $user = auth()->user();
+
         $planning = Planning::create([
+            'user_id' => $user->id,
             'title' => $request->title,
             'deadline' => $request->deadline,
             'target_amount' => $request->target_amount,

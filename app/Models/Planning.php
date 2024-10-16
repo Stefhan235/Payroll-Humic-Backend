@@ -10,6 +10,7 @@ class Planning extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'title',
         'deadline',
         'target_amount',
@@ -19,5 +20,10 @@ class Planning extends Model
     public function files()
     {
         return $this->hasMany(File::class);
+    }
+
+        public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
