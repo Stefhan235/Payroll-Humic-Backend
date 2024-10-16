@@ -35,7 +35,7 @@ class FileController extends Controller
 
         return response()->json([
             'status' => true,
-            'url' => url('storage/' . $path),
+            'url' => url('storage/app/public/' . $path),
             'type' => $fileType
         ], 200);
     }

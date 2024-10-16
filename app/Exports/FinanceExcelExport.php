@@ -46,8 +46,8 @@ class FinanceExcelExport implements FromCollection, WithHeadings, WithStyles
                 'Transaction Type' => $finance->transaction_type,
                 'Amount' => (string)$finance->amount,
                 'Tax Amount' => (string)$finance->tax_amount,
-                'Document Evidence' => url('storage/' . $finance->document_evidence),
-                'Image Evidence' => url('storage/' . $finance->image_evidence),
+                'Document Evidence' => url('storage/app/public/' . $finance->document_evidence),
+                'Image Evidence' => url('storage/app/public/' . $finance->image_evidence),
                 'Status' => $finance->status,
                 'Date' => $finance->created_at->timezone('Asia/Jakarta')->format('d-m-Y H:i:s'),
             ];
