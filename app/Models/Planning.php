@@ -12,17 +12,17 @@ class Planning extends Model
     protected $fillable = [
         'user_id',
         'title',
-        'deadline',
-        'target_amount',
-        'content'
+        'start_date',
+        'end_date',
+        'status',
     ];
 
-    public function files()
+    public function item()
     {
-        return $this->hasMany(File::class);
+        return $this->hasMany(Item::class);
     }
 
-        public function user()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

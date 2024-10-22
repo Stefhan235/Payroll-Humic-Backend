@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\PlanningController;
-use App\Http\Controllers\FileController;
+use App\Http\Controllers\ItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,9 +41,18 @@ Route::get('/pending',[FinanceController::class, 'getPendingFinance'])->middlewa
 
 Route::get('/export', [FinanceController::class, 'export'])->middleware('auth:sanctum');
 
-Route::get('/plannings', [PlanningController::class, 'getAllPlanning'])->middleware('auth:sanctum'); 
+Route::get('/planning', [PlanningController::class, 'getAllPlanning'])->middleware('auth:sanctum'); 
 Route::get('/planning/{id}', [PlanningController::class, 'getPlanningByID'])->middleware('auth:sanctum');
 Route::post('/planning', [PlanningController::class, 'postPlanning'])->middleware('auth:sanctum'); 
 Route::post('/planning/{id}', [PlanningController::class, 'updatePlanning'])->middleware('auth:sanctum');
-Route::delete('/planning/{id}', [PlanningController::class, 'deletePlanningById'])->middleware('auth:sanctum'); 
-Route::post('/files/upload', [FileController::class, 'upload'])->middleware('auth:sanctum');  
+Route::post('/planning/update-status/{id}', [PlanningController::class, 'updatePlanningStatus'])->middleware('auth:sanctum');
+Route::delete('/planning/{id}', [PlanningController::class, 'deletePlanning'])->middleware('auth:sanctum'); 
+
+Route::get('/realization', [PlanningController::class, 'getAllRealization'])->middleware('auth:sanctum'); 
+Route::get('/realization/{id}', [PlanningController::class, 'getRealizationByID'])->middleware('auth:sanctum'); 
+
+Route::post('/item', [ItemController::class, 'postItem'])->middleware('auth:sanctum'); 
+Route::post('/item/{id}', [ItemController::class, 'updateItem'])->middleware('auth:sanctum'); 
+Route::get('/item', [ItemController::class, 'getAllItem'])->middleware('auth:sanctum'); 
+Route::get('/item/{id}', [ItemController::class, 'getItemByID'])->middleware('auth:sanctum');
+Route::delete('/item/{id}', [ItemController::class, 'deleteItem'])->middleware('auth:sanctum');

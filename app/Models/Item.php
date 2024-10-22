@@ -5,14 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class File extends Model
+class Item extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'file_path',
-        'type',
-        'planning_id'
+        'planning_id',
+        'date',
+        'information',
+        'bruto_amount',
+        'tax_amount',
+        'netto_amount',
+        'category',
+        'isAddition'
     ];
 
     public function planning()
