@@ -171,7 +171,7 @@ class PlanningController extends Controller
     public function updatePlanningStatus(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'status' => 'required|in:approve,pending,decline',
+            'status' => 'required|in:approve,pending,decline,deleted',
         ]);
 
         if ($validator->fails()) {
