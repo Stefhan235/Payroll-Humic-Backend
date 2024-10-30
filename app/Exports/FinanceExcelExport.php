@@ -26,7 +26,7 @@ class FinanceExcelExport implements FromCollection, WithHeadings, WithStyles
 
     public function collection()
     {
-        $finances = Finance::whereBetween(DB::raw('DATE(created_at)'), [$this->startDate, $this->endDate])
+        $finances = Finance::whereBetween(DB::raw('DATE(date)'), [$this->startDate, $this->endDate])
             ->select([
                 'id',
                 'activity_name',
@@ -36,8 +36,10 @@ class FinanceExcelExport implements FromCollection, WithHeadings, WithStyles
                 'document_evidence',
                 'image_evidence',
                 'status',
-                'created_at'
-            ])->get();
+                'date'
+            ])
+            ->orderBy('date', 'desc')
+            ->get();
 
         $numberedFinances = $finances->map(function ($finance, $key) {
             return [
@@ -49,7 +51,7 @@ class FinanceExcelExport implements FromCollection, WithHeadings, WithStyles
                 'Document Evidence' => url('storage/app/public/' . $finance->document_evidence),
                 'Image Evidence' => url('storage/app/public/' . $finance->image_evidence),
                 'Status' => $finance->status,
-                'Date' => $finance->created_at->timezone('Asia/Jakarta')->format('d-m-Y H:i:s'),
+                'Date' => $finance->date,
             ];
         });
 

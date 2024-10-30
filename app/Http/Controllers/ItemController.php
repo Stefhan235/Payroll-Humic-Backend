@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Planning;
 use App\Models\Item;
 use Illuminate\Support\Facades\Validator;
+use App\Exports\ItemExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ItemController extends Controller
 {
@@ -145,4 +147,20 @@ class ItemController extends Controller
             'message' => 'Item Data Deleted Successfully.',
         ], 200);
     }
+
+    public function export(Request $request)
+    {
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
+        $type = $request->input('type');
+        $category = $request->input('category');
+
+        if ($type == 'excel') {
+            $fileName = 'items_data_' . $startDate . '_to_' . $endDate . '.xlsx';
+            return Excel::download(new ItemExport($startDate, $endDate, $category), $fileName, \Maatwebsite\Excel\Excel::XLSX);
+        } elseif ($type == 'pdf') {
+            $fileName = 'items_data_' . $startDate . '_to_' . $endDate . '.pdf';
+            return Excel::download(new ItemExport($startDate, $endDate, $category), $fileName, \Maatwebsite\Excel\Excel::MPDF);
+        }
+    }   
 }

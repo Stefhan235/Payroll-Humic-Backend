@@ -14,6 +14,7 @@ class Finance extends Model
         'user_id',
         'activity_name',
         'transaction_type',
+        'date',
         'amount',
         'tax_amount',
         'document_evidence',

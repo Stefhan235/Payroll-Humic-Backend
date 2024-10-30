@@ -56,3 +56,10 @@ Route::post('/item/{id}', [ItemController::class, 'updateItem'])->middleware('au
 Route::get('/item', [ItemController::class, 'getAllItem'])->middleware('auth:sanctum'); 
 Route::get('/item/{id}', [ItemController::class, 'getItemByID'])->middleware('auth:sanctum');
 Route::delete('/item/{id}', [ItemController::class, 'deleteItem'])->middleware('auth:sanctum');
+
+Route::get('/export-item', [ItemController::class, 'export'])->middleware('auth:sanctum');
+
+Route::get('/planning-compare', [PlanningController::class, 'getComparePlanning'])->middleware('auth:sanctum'); 
+Route::get('/planning-compare/{id}', [PlanningController::class, 'getCompareDataByID'])->middleware('auth:sanctum'); 
+
+Route::get('/planning-approve', [PlanningController::class, 'getApprovalPlanning'])->middleware('auth:sanctum'); 

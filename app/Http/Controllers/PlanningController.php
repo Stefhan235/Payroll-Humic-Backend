@@ -221,4 +221,78 @@ class PlanningController extends Controller
             'message' => 'Planning Data Deleted Successfully.',
         ], 200);
     }
+
+    public function getComparePlanning(Request $request)
+    {
+        $limit = $request->input('limit', 10);
+
+        $comparePlanningData = Planning::where('status', 'approve')->paginate($limit);
+
+        return response()->json([
+            'status' => true,
+            'data' => $comparePlanningData
+        ], 200);
+    }
+
+    public function getCompareDataByID($id){
+        $planningData = Planning::with(['item' => function ($query) {
+                                        $query->where('isAddition', 0);
+                                    }])
+                                ->withCount(['item' => function ($query) {
+                                        $query->where('isAddition', 0);
+                                    }])
+                                ->withSum(['item' => function ($query) {
+                                        $query->where('isAddition', 0);
+                                    }], 'bruto_amount')
+                                ->withSum(['item' => function ($query) {
+                                        $query->where('isAddition', 0);
+                                    }], 'tax_amount')
+                                ->withSum(['item' => function ($query) {
+                                        $query->where('isAddition', 0);
+                                    }], 'netto_amount')
+                                ->find($id);
+
+        $realizationData = Planning::with('item')
+                                ->withCount('item')
+                                ->withSum('item', 'bruto_amount')
+                                ->withSum('item', 'tax_amount')
+                                ->withSum('item', 'netto_amount')
+                                ->find($id);
+
+        if (!$planningData) {
+            return response()->json([
+                'status' => false,
+                'message' => "Compare Planning Data With id {$id} Not Found.",
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => [
+                'planning' => $planningData,
+                'realization' => $realizationData
+            ]
+        ], 200);
+    }
+
+    public function getApprovalPlanning(Request $request){
+        $limit = $request->input('limit', 10);
+
+        $itemQuery = function ($query) {
+            $query->where('isAddition', 0);
+        };
+
+        $pendingPlanningData = Planning::with(['item' => $itemQuery])
+            ->where('status', 'pending')
+            ->withCount(['item' => $itemQuery])
+            ->withSum(['item' => $itemQuery], 'bruto_amount')
+            ->withSum(['item' => $itemQuery], 'tax_amount')
+            ->withSum(['item' => $itemQuery], 'netto_amount')
+            ->paginate($limit);
+
+        return response()->json([
+            'status' => true,
+            'data' => $pendingPlanningData
+        ], 200);
+    }
 }
