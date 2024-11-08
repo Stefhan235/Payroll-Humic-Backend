@@ -201,7 +201,9 @@ class FinanceController extends Controller
         // Realization Data with year filter
         $realizationData = Planning::where('status', 'approve')
                                     ->whereYear('start_date', $selectedYearForPieChart)
-                                    ->with('item')
+                                    ->with(['item' => function ($query) {
+                                        $query->where('isAddition', 1);
+                                    }])
                                     ->get()
                                     ->map(function ($planning) {
                                         return [

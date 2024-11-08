@@ -26,6 +26,7 @@ class ItemExport implements FromCollection, WithHeadings, WithStyles
     {
         $items = Item::whereBetween(DB::raw('DATE(date)'), [$this->startDate, $this->endDate])
             ->where('category', $this->category)
+            ->where('isAddition', 1)
             ->select([
                 'id',
                 'information',
@@ -33,7 +34,6 @@ class ItemExport implements FromCollection, WithHeadings, WithStyles
                 'tax_amount',
                 'netto_amount',
                 'category',
-                'isAddition',
                 'date'
             ])
             ->orderBy('date', 'desc')
@@ -47,7 +47,6 @@ class ItemExport implements FromCollection, WithHeadings, WithStyles
                 'Tax Amount' => (string)$item->tax_amount,
                 'Netto Amount' => (string)$item->netto_amount,
                 'Category' => ucfirst($item->category),
-                'Is Addition' => $item->isAddition ? 'Yes' : 'No',
                 'Date' => $item->date,
             ];
         });
@@ -65,7 +64,6 @@ class ItemExport implements FromCollection, WithHeadings, WithStyles
             'Tax Amount' => (string)$totalTax,
             'Netto Amount' => (string)$totalNetto,
             'Category' => '',
-            'Is Addition' => '',
             'Date' => '',
         ]);
 
@@ -82,7 +80,6 @@ class ItemExport implements FromCollection, WithHeadings, WithStyles
             'Tax Amount',
             'Netto Amount',
             'Category',
-            'Is Addition',
             'Date',
         ];
     }
@@ -93,8 +90,8 @@ class ItemExport implements FromCollection, WithHeadings, WithStyles
         $sheet->setCellValue('A1', 'Laporan Data Items');
         $sheet->setCellValue('A2', 'Tanggal: ' . $this->startDate . ' - ' . $this->endDate . ' | Kategori: ' . ucfirst($this->category));
 
-        $sheet->mergeCells('A1:H1');
-        $sheet->mergeCells('A2:H2');
+        $sheet->mergeCells('A1:G1');
+        $sheet->mergeCells('A2:G2');
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
         $sheet->getStyle('A2')->getFont()->setBold(true);
 

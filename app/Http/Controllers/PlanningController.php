@@ -64,8 +64,12 @@ class PlanningController extends Controller
         $limit = $request->input('limit', 10);
 
         $realizationData = Planning::where('status', 'approve')
-                                ->withCount('item')
-                                ->withSum('item', 'netto_amount')
+                                ->withCount(['item' => function ($query) {
+                                        $query->where('isAddition', 1);
+                                    }])
+                                ->withSum(['item' => function ($query) {
+                                        $query->where('isAddition', 1);
+                                    }], 'netto_amount')
                                 ->paginate($limit);
 
         return response()->json([
@@ -75,12 +79,22 @@ class PlanningController extends Controller
     }
 
     public function getRealizationByID($id)
-    {
-        $realizationData = Planning::with('item')
-                                ->withCount('item')
-                                ->withSum('item', 'bruto_amount')
-                                ->withSum('item', 'tax_amount')
-                                ->withSum('item', 'netto_amount')
+    {                          
+        $realizationData =  Planning::with(['item' => function ($query) {
+                                        $query->where('isAddition', 1);
+                                    }])
+                                ->withCount(['item' => function ($query) {
+                                        $query->where('isAddition', 1);
+                                    }])
+                                ->withSum(['item' => function ($query) {
+                                        $query->where('isAddition', 1);
+                                    }], 'bruto_amount')
+                                ->withSum(['item' => function ($query) {
+                                        $query->where('isAddition', 1);
+                                    }], 'tax_amount')
+                                ->withSum(['item' => function ($query) {
+                                        $query->where('isAddition', 1);
+                                    }], 'netto_amount')
                                 ->find($id);
 
         if (!$realizationData) {
@@ -194,6 +208,23 @@ class PlanningController extends Controller
             'status' => $request->status,
         ]);
 
+        if ($request->status === 'approve') {
+            $items = Item::where('planning_id', $id)->where('isAddition', 0)->get();
+
+            foreach ($items as $item) {
+                Item::create([
+                    'planning_id' => $item->planning_id,
+                    'date' => $item->date,
+                    'information' => $item->information,
+                    'bruto_amount' => $item->bruto_amount,
+                    'tax_amount' => $item->tax_amount,
+                    'netto_amount' => $item->netto_amount,
+                    'category' => $item->category,
+                    'isAddition' => 1,
+                ]);
+            }
+        }
+
         $planningData = Planning::find($id);
 
         return response()->json([
@@ -252,11 +283,21 @@ class PlanningController extends Controller
                                     }], 'netto_amount')
                                 ->find($id);
 
-        $realizationData = Planning::with('item')
-                                ->withCount('item')
-                                ->withSum('item', 'bruto_amount')
-                                ->withSum('item', 'tax_amount')
-                                ->withSum('item', 'netto_amount')
+        $realizationData = Planning::with(['item' => function ($query) {
+                                        $query->where('isAddition', 1);
+                                    }])
+                                ->withCount(['item' => function ($query) {
+                                        $query->where('isAddition', 1);
+                                    }])
+                                ->withSum(['item' => function ($query) {
+                                        $query->where('isAddition', 1);
+                                    }], 'bruto_amount')
+                                ->withSum(['item' => function ($query) {
+                                        $query->where('isAddition', 1);
+                                    }], 'tax_amount')
+                                ->withSum(['item' => function ($query) {
+                                        $query->where('isAddition', 1);
+                                    }], 'netto_amount')
                                 ->find($id);
 
         if (!$planningData) {
