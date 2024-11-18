@@ -12,13 +12,16 @@ class PlanningController extends Controller
     public function getAllPlanning(Request $request)
     {
         $limit = $request->input('limit', 10);
+        $year = $request->input('year', date('Y'));
 
-        $planningData = Planning::withCount(['item' => function ($query) {
-                                        $query->where('isAddition', 0);
-                                    }])
+        $planningData = Planning::whereYear('start_date', $year)
+                                ->withCount(['item' => function ($query) {
+                                    $query->where('isAddition', 0);
+                                }])
                                 ->withSum(['item' => function ($query) {
-                                        $query->where('isAddition', 0);
-                                    }], 'netto_amount')
+                                    $query->where('isAddition', 0);
+                                }], 'netto_amount')
+                                ->orderBy('created_at', 'desc')
                                 ->paginate($limit);
 
         return response()->json([
@@ -62,15 +65,18 @@ class PlanningController extends Controller
     public function getAllRealization(Request $request)
     {
         $limit = $request->input('limit', 10);
+        $year = $request->input('year', date('Y'));
 
         $realizationData = Planning::where('status', 'approve')
-                                ->withCount(['item' => function ($query) {
+                                    ->whereYear('start_date', $year)
+                                    ->withCount(['item' => function ($query) {
                                         $query->where('isAddition', 1);
                                     }])
-                                ->withSum(['item' => function ($query) {
+                                    ->withSum(['item' => function ($query) {
                                         $query->where('isAddition', 1);
                                     }], 'netto_amount')
-                                ->paginate($limit);
+                                    ->orderBy('created_at', 'desc')
+                                    ->paginate($limit);
 
         return response()->json([
             'status' => true,
@@ -256,8 +262,12 @@ class PlanningController extends Controller
     public function getComparePlanning(Request $request)
     {
         $limit = $request->input('limit', 10);
+        $year = $request->input('year', date('Y'));
 
-        $comparePlanningData = Planning::where('status', 'approve')->paginate($limit);
+        $comparePlanningData = Planning::where('status', 'approve')
+                                    ->whereYear('start_date', $year)
+                                    ->orderBy('created_at', 'desc')
+                                    ->paginate($limit);
 
         return response()->json([
             'status' => true,
@@ -329,6 +339,7 @@ class PlanningController extends Controller
             ->withSum(['item' => $itemQuery], 'bruto_amount')
             ->withSum(['item' => $itemQuery], 'tax_amount')
             ->withSum(['item' => $itemQuery], 'netto_amount')
+            ->orderBy('created_at', 'desc')
             ->paginate($limit);
 
         return response()->json([

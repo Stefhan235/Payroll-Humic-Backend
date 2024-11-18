@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Illuminate\Support\Carbon;
 
 class ItemExport implements FromCollection, WithHeadings, WithStyles
 {
@@ -47,7 +48,7 @@ class ItemExport implements FromCollection, WithHeadings, WithStyles
                 'Tax Amount' => (string)$item->tax_amount,
                 'Netto Amount' => (string)$item->netto_amount,
                 'Category' => ucfirst($item->category),
-                'Date' => $item->date,
+                'Date' => Carbon::parse($item->date)->format('d-m-Y'),
             ];
         });
 
@@ -88,7 +89,7 @@ class ItemExport implements FromCollection, WithHeadings, WithStyles
     {
         $sheet->insertNewRowBefore(1, 2);
         $sheet->setCellValue('A1', 'Laporan Data Items');
-        $sheet->setCellValue('A2', 'Tanggal: ' . $this->startDate . ' - ' . $this->endDate . ' | Kategori: ' . ucfirst($this->category));
+        $sheet->setCellValue('A2', 'Tanggal: ' . Carbon::parse($this->startDate)->format('d-m-Y') . ' - ' . Carbon::parse($this->endDate)->format('d-m-Y') . ' | Kategori: ' . ucfirst($this->category));
 
         $sheet->mergeCells('A1:G1');
         $sheet->mergeCells('A2:G2');

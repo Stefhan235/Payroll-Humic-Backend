@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Illuminate\Support\Carbon;
 
 class FinanceExcelExport implements FromCollection, WithHeadings, WithStyles
 {
@@ -51,7 +52,7 @@ class FinanceExcelExport implements FromCollection, WithHeadings, WithStyles
                 'Document Evidence' => url('storage/app/public/' . $finance->document_evidence),
                 'Image Evidence' => url('storage/app/public/' . $finance->image_evidence),
                 'Status' => $finance->status,
-                'Date' => $finance->date,
+                'Date' => Carbon::parse($finance->date)->format('d-m-Y'),
             ];
         });
 
@@ -77,7 +78,7 @@ class FinanceExcelExport implements FromCollection, WithHeadings, WithStyles
     {
         $sheet->insertNewRowBefore(1, 2);
         $sheet->setCellValue('A1', 'Laporan Keuangan');
-        $sheet->setCellValue('A2', 'Tanggal: ' . $this->startDate . ' - ' . $this->endDate);
+        $sheet->setCellValue('A2', 'Tanggal: ' . Carbon::parse($this->startDate)->format('d-m-Y') . ' - ' . Carbon::parse($this->endDate)->format('d-m-Y'));
 
         $sheet->mergeCells('A1:I1');
         $sheet->mergeCells('A2:I2');
