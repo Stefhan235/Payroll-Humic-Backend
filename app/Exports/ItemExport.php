@@ -35,6 +35,8 @@ class ItemExport implements FromCollection, WithHeadings, WithStyles
                 'tax_amount',
                 'netto_amount',
                 'category',
+                'document_evidence',
+                'image_evidence',
                 'date'
             ])
             ->orderBy('date', 'desc')
@@ -48,6 +50,12 @@ class ItemExport implements FromCollection, WithHeadings, WithStyles
                 'Tax Amount' => (string)$item->tax_amount,
                 'Netto Amount' => (string)$item->netto_amount,
                 'Category' => ucfirst($item->category),
+                'Document Evidence' => $item->document_evidence 
+                    ? url('storage/app/public/' . $item->document_evidence) 
+                    : 'None',
+                'Image Evidence' => $item->image_evidence 
+                    ? url('storage/app/public/' . $item->image_evidence) 
+                    : 'None',
                 'Date' => Carbon::parse($item->date)->format('d-m-Y'),
             ];
         });
@@ -65,6 +73,8 @@ class ItemExport implements FromCollection, WithHeadings, WithStyles
             'Tax Amount' => (string)$totalTax,
             'Netto Amount' => (string)$totalNetto,
             'Category' => '',
+            'Document Evidence' => '',
+            'Image Evidence' => '',
             'Date' => '',
         ]);
 
@@ -81,6 +91,8 @@ class ItemExport implements FromCollection, WithHeadings, WithStyles
             'Tax Amount',
             'Netto Amount',
             'Category',
+            'Document Evidence',
+            'Image Evidence',
             'Date',
         ];
     }
@@ -91,8 +103,8 @@ class ItemExport implements FromCollection, WithHeadings, WithStyles
         $sheet->setCellValue('A1', 'Laporan Data Items');
         $sheet->setCellValue('A2', 'Tanggal: ' . Carbon::parse($this->startDate)->format('d-m-Y') . ' - ' . Carbon::parse($this->endDate)->format('d-m-Y') . ' | Kategori: ' . ucfirst($this->category));
 
-        $sheet->mergeCells('A1:G1');
-        $sheet->mergeCells('A2:G2');
+        $sheet->mergeCells('A1:I1');
+        $sheet->mergeCells('A2:I2');
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
         $sheet->getStyle('A2')->getFont()->setBold(true);
 

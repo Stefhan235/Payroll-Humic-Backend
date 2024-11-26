@@ -32,7 +32,7 @@ Route::get('/finance/{id}', [FinanceController::class, 'getFinanceDataById'])->m
 Route::get('/dashboard', [FinanceController::class, 'getDashboardData'])->middleware('auth:sanctum');
 
 Route::post('/finance', [FinanceController::class, 'postFinanceData'])->middleware('auth:sanctum');
-Route::delete('/finance/{id}', [FinanceController::class, 'deleteFinanceDataById'])->middleware(['auth:sanctum', 'role:superAdmin']);
+Route::delete('/finance/{id}', [FinanceController::class, 'deleteFinanceDataById'])->middleware('auth:sanctum');
 Route::post('/finance/{id}', [FinanceController::class, 'updateFinanceStatus'])->middleware(['auth:sanctum', 'role:superAdmin']);
 
 Route::get('/income',[FinanceController::class, 'getAllIncome'])->middleware('auth:sanctum');

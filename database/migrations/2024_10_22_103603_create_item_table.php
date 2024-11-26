@@ -20,6 +20,8 @@ return new class extends Migration
             $table->bigInteger('tax_amount');
             $table->bigInteger('netto_amount');
             $table->enum('category', ['internal', 'eksternal', 'rka']);
+            $table->text('document_evidence')->nullable();
+            $table->text('image_evidence')->nullable();
             $table->boolean('isAddition');
             $table->timestamps();
         });

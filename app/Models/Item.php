@@ -17,6 +17,8 @@ class Item extends Model
         'tax_amount',
         'netto_amount',
         'category',
+        'document_evidence',
+        'image_evidence',
         'isAddition'
     ];
 
